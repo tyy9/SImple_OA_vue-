@@ -78,15 +78,15 @@ export default {
                   cookie.set("token",res.data.token,{domain:"localhost"})
                   console.log(cookie.get("token"))
                   //在跳转之前对token进行检查并把用户信息保存在cookie中
-                  Login.checktoken().then(res=>{
-                    console.log("log=>",res)
-                    const userinfo=JSON.stringify(res.data.user)
-                    cookie.set("userinfo",userinfo,{domain:"localhost"})
-                    this.$router.push("/")
-                  })
-                    
+                  // Login.checktoken().then(res=>{
+                  //   console.log("log=>",res)
+                  //   const userinfo=JSON.stringify(res.data.user)
+                  //   cookie.set("userinfo",userinfo,{domain:"localhost"})
+                  //   this.$router.push("/")
+                  // })
+                  this.$router.push("/")
                   
-
+                    
                 });
             }else{
                 return false

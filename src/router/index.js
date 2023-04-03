@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Manage.vue'
+import cookie from"js-cookie"
+import { Message, MessageBox } from 'element-ui'
 
 Vue.use(VueRouter)
 
@@ -54,5 +56,34 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+//强制登录
+router.beforeEach((to, from, next) => {
+  if (to.path.startsWith('/login')) {
+    //如果从login开始则删除cookie里的所有值
+    cookie.set("token", "", { domain: "localhost" });
+    cookie.set("userinfo", "", { domain: "localhost" });
+      next()
+  } else if(to.path.startsWith('/register')){
+    //如果从register开始则删除cookie里的所有值
+    cookie.set("token", "", { domain: "localhost" });
+    cookie.set("userinfo", "", { domain: "localhost" });
+    next()
+  }
+  else {
+      if (cookie.get("token")=="") {
+        //如果不是则判断cookie里的token值是否存在
+        MessageBox.alert("未登录", '未登录', {
+          confirmButtonText: '确定',
+          type: 'error'
+      })
+          next({
+              path: '/login'
+          })
+      } else {
+          next()
+      }
+  }
+});
 
 export default router

@@ -18,7 +18,7 @@
     >
       <span
         style="
-          display: flex;
+          display:flex;
           justify-content: center;
           flex-direction: column;
           margin-right: 5px;
@@ -41,13 +41,17 @@
       ></i>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>
-          <router-link to="/userinfo" style="text-decoration: none; color: black"
+          <router-link
+            to="/userinfo"
+            style="text-decoration: none; color: black"
             >个人信息</router-link
-          ></el-dropdown-item>
+          ></el-dropdown-item
+        >
         <el-dropdown-item>
-          <router-link to="/login" style="text-decoration: none; color: black"
+          <!-- <router-link to="/login" style="text-decoration: none; color: black"
             >退出</router-link
-          >
+          > -->
+          <span @click="register">退出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -55,7 +59,8 @@
 </template>
 <script>
 import cookie from "js-cookie";
-
+import { error } from "console";
+import Login from "@/api/Login";
 export default {
   props: {
     collapsebtn: String,
@@ -71,13 +76,28 @@ export default {
     },
     register() {
       console.log(1);
+      cookie.set("token", "", { domain: "localhost" });
+      cookie.set("userinfo", "", { domain: "localhost" });
       this.$router.push("/login");
+    },
+    checktoken() {
+      Login.checktoken().then((res) => {
+        console.log("log=>", res);
+        const userinfo = JSON.stringify(res.data.user);
+        cookie.set("userinfo", userinfo, { domain: "localhost" });
+        const Stringinfo = cookie.get("userinfo");
+        console.log(1);
+        //对string类型的信息进行json转换
+        this.userinfo = JSON.parse(Stringinfo);
+      });
     },
   },
   created() {
-    const Stringinfo = cookie.get("userinfo");
-    //对string类型的信息进行json转换
-    this.userinfo = JSON.parse(Stringinfo);
+    // const Stringinfo = cookie.get("userinfo");
+    // console.log(1);
+    // //对string类型的信息进行json转换
+    // this.userinfo = JSON.parse(Stringinfo);
+    this.checktoken()
   },
 };
 </script>

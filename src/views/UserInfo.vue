@@ -25,12 +25,12 @@
         <el-input v-model="userinfo.email"></el-input>
       </el-form-item>
       <el-form-item label="用户密码">
-        <el-input v-model="userinfo.username" show-password></el-input>
+        <el-input v-model="userinfo.password" show-password></el-input>
       </el-form-item>
       <span>用户头像(点击更换)</span>
       <el-upload
         class="avatar-uploader"
-        action=""
+        action="http://localhost:8001/my_oa/oss/upload"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
@@ -38,11 +38,17 @@
         <img v-if="userinfo.avatarUrl" :src="userinfo.avatarUrl" class="avatar" />
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
+      <div class="btnbox">
+        <el-button type="success" @click="updateUser">保存</el-button>
+        <el-button type="">取消</el-button>
+      </div>
     </el-form>
   </div>
 </template>
 <script>
 import cookie from "js-cookie";
+import user from "@/api/user"
+import { type } from 'os';
 export default {
   data() {
     return {
@@ -57,7 +63,7 @@ export default {
   },
   methods:{
     handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
+        this.userinfo.avatarUrl=res.data.url
       },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
@@ -70,6 +76,16 @@ export default {
           this.$message.error('上传头像图片大小不能超过 2MB!');
         }
         return isJPG && isLt2M;
+      },
+      updateUser(){
+        user.updateUser(this.userinfo).then(res=>{
+          this.$message({
+            type:'success',
+            message:"修改成功,请重新登录"
+          })
+          
+          this.$router.push("/login")
+        })
       }
   }
 };

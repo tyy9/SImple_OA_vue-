@@ -44,6 +44,13 @@ instance.interceptors.response.use(
             })
             return Promise.reject('error')
         }
+        else if (res.code == 21) {
+            MessageBox.alert(res.message, '未登录', {
+                confirmButtonText: '确定',
+                type: 'error'
+            })
+            return Promise.reject('error')
+        }
         return res
     },
     function (err) {
