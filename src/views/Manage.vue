@@ -71,84 +71,9 @@ export default {
         this.textshow = true;
       }
     },
-    getUserList(page = 1) {//分页
-      this.page = page;
-      user.pageUser(this.page, this.limit, this.sysUser).then((res) => {
-        console.log(res);
-        this.userdata = res.data.data;
-        this.total = res.data.total;
-      });
-    },
-    onsubmit() {//按需查询
-      user.pageUser(this.page, this.limit, this.sysUser).then((res) => {
-        console.log(res);
-        this.userdata = res.data.data;
-        this.total = res.data.total;
-      });
-    },
-    addUser(){
-      user.addUser(this.form).then(res=>{
-        this.$message({
-          showClose: true,
-          message: '添加成功',
-          type: 'success'
-        })
-        this.dialogFormVisible=false
-        this.getUserList()
-      })
-    },
-    //回显
-    findUserById(id){
-      this.dialogFormVisible=true
-      user.findUserById(id).then(res=>{
-        console.log(res)
-        this.form=res.data.user
-      })
-    },
-    //更新与添加通用接口
-    addORupadte(){
-      if(!this.form.id){
-        this.addUser()
-      }else{
-          this.updateUser()
-      }
-    },
-    //更新
-    updatedUser() {
-      user.updateUser(this.form).then(res=>{
-        this.$message({
-          showClose: true,
-          message: '更新成功',
-          type: 'success'
-        })
-        this.dialogFormVisible=false
-        this.getUserList()
-      })
-    },
-    //删除弹窗
-    open(id){
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          user.deleteUser(id).then(res=>{
-            this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getUserList();
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-    }
+    
   },
   created() {
-    this.getUserList();
     this.textshow=true
   },
   components:{

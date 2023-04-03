@@ -1,4 +1,5 @@
 import axios from 'axios'
+import cookie from 'js-cookie'
 import { Message, MessageBox } from 'element-ui'  //导入element-ui组件库
  
 // 创建axios的对象
@@ -11,7 +12,7 @@ const instance = axios.create({
 // 所有的网络请求都会走这个方法,可以在请求添加自定义内容
 instance.interceptors.request.use(
     function (config) {
-        config.headers.token = '123456' // 请求头添加token值
+        config.headers.token = cookie.get("token")// 请求头添加token值
         config.headers.info = 'lxy'  //请求头添加info值
         return config
     },

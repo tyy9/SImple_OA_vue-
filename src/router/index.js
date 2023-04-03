@@ -15,8 +15,11 @@ const routes = [
       name: '首页',
       component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')},
       {path: 'user',
-      name: '首页',
-      component: () => import(/* webpackChunkName: "about" */ '../views/User.vue')}
+      name: '用户管理',
+      component: () => import(/* webpackChunkName: "about" */ '../views/User.vue')},
+      {path: 'userinfo',
+      name: '个人信息',
+      component: () => import(/* webpackChunkName: "about" */ '../views/UserInfo.vue')}
 
     ]
   },

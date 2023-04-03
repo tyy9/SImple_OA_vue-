@@ -47,6 +47,7 @@
 
 <script>
 import Login from "@/api/Login";
+import cookie from "js-cookie"
 export default {
   data() {
     return {
@@ -72,7 +73,20 @@ export default {
         this.$refs['ruleForm'].validate((vaild)=>{
             if(vaild){
                 Login.login(this.sysuser).then((res) => {
+                  console.log(res)
+                  //将token放入cookie中
+                  cookie.set("token",res.data.token,{domain:"localhost"})
+                  console.log(cookie.get("token"))
+                  //在跳转之前对token进行检查并把用户信息保存在cookie中
+                  Login.checktoken().then(res=>{
+                    console.log("log=>",res)
+                    const userinfo=JSON.stringify(res.data.user)
+                    cookie.set("userinfo",userinfo,{domain:"localhost"})
                     this.$router.push("/")
+                  })
+                    
+                  
+
                 });
             }else{
                 return false

@@ -46,7 +46,7 @@
             :total="total"
           >
           </el-pagination>
-          <el-dialog title="新增用户" :visible.sync="dialogFormVisible">
+          <el-dialog title="用户调整" :visible.sync="dialogFormVisible">
       <el-form :model="form" label-width="120px">
         <el-form-item label="用户名称" :label-width="formLabelWidth">
           <el-input v-model="form.username" autocomplete="off"></el-input>
@@ -57,7 +57,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addUser"
+        <el-button type="primary" @click="addORupadte"
           >确 定</el-button
         >
       </div>
@@ -135,7 +135,7 @@ export default {
       if(!this.form.id){
         this.addUser()
       }else{
-          this.updateUser()
+          this.updatedUser()
       }
     },
     //更新
