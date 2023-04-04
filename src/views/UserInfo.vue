@@ -33,7 +33,9 @@
         action="http://localhost:8001/my_oa/oss/upload"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
+        
         :before-upload="beforeAvatarUpload"
+        
       >
         <img v-if="userinfo.avatarUrl" :src="userinfo.avatarUrl" class="avatar" />
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -53,6 +55,9 @@ export default {
   data() {
     return {
       userinfo: {},
+      // requestHeader: {  //未上传图片的请求头加token
+      //     Authorization: cookie.get("token")
+      //   },
     };
   },
   created() {

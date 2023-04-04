@@ -14,6 +14,7 @@ instance.interceptors.request.use(
     function (config) {
         config.headers.token = cookie.get("token")// 请求头添加token值
         config.headers.info = 'lxy'  //请求头添加info值
+        config.headers.Authorization=cookie.get("token")
         return config
     },
     function (err) {

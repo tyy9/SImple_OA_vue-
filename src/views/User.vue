@@ -1,9 +1,12 @@
 <template>
     <div>
+      <div class="tittle" style="margin-bottom: 10px;">
+        <b>用户管理</b>
+    </div>
         <div class="search_header">
             <el-input
               v-model="sysUser.username"
-              placeholder="请输入内容"
+              placeholder="请输入名字"
               style="width: 200px; margin-right: 5px"
             ></el-input>
             <el-button type="primary" icon="el-icon-search" @click="onsubmit"
