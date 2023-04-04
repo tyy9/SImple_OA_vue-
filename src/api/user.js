@@ -41,5 +41,12 @@ export default{
             url:`/my_oa/sys-user/deleteUser/${id}`,
             method:'delete'
         })
+    },
+    deleteUserbatch(ids){
+        return request({
+            url:`/my_oa/sys-user/deletebatch/`,
+            method:"delete",
+            data:ids
+        })
     }
 }

@@ -14,8 +14,13 @@
             <el-button type="primary" @click="dialogFormVisible = true"
               >新增</el-button
             >
+            <el-button type="danger" slot="reference" @click="deletebatch">批量删除 <i class="el-icon-remove-outline"></i></el-button>
           </div>
-          <el-table :data="userdata">
+          <el-table :data="userdata"   @selection-change="handleSelectionChange">
+                  <el-table-column
+            type="selection"
+            width="55">
+          </el-table-column>
             <el-table-column prop="createTime" label="日期" width="140">
             </el-table-column>
             <el-table-column prop="username" label="姓名" width="120">
@@ -80,7 +85,8 @@ export default {
       form:{},
       textshow: true,
       dynamic_px: 200,
-      isCollapse:false
+      isCollapse:false,
+      multiselect:{}
     };
   },
   methods: {
@@ -158,6 +164,32 @@ export default {
           type: 'warning'
         }).then(() => {
           user.deleteUser(id).then(res=>{
+            this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getUserList();
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
+    handleSelectionChange(val){
+      console.log(val)
+      this.multiselect=val
+    },
+    deletebatch(){
+      let ids=this.multiselect.map(v=>v.id)
+      console.log(ids)
+      this.$confirm('此操作将永久删除所选文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          user.deleteUserbatch(ids).then(res=>{
             this.$message({
             type: 'success',
             message: '删除成功!'

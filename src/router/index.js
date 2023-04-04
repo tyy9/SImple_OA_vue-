@@ -21,7 +21,10 @@ const routes = [
       component: () => import(/* webpackChunkName: "about" */ '../views/User.vue')},
       {path: 'userinfo',
       name: '个人信息',
-      component: () => import(/* webpackChunkName: "about" */ '../views/UserInfo.vue')}
+      component: () => import(/* webpackChunkName: "about" */ '../views/UserInfo.vue')},
+      {path: 'file',
+      name: '文件管理',
+      component: () => import(/* webpackChunkName: "about" */ '../views/File.vue')}
 
     ]
   },
