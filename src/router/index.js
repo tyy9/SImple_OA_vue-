@@ -24,7 +24,13 @@ const routes = [
       component: () => import(/* webpackChunkName: "about" */ '../views/UserInfo.vue')},
       {path: 'file',
       name: '文件管理',
-      component: () => import(/* webpackChunkName: "about" */ '../views/File.vue')}
+      component: () => import(/* webpackChunkName: "about" */ '../views/File.vue')},
+      {path: 'role',
+      name: '角色管理',
+      component: () => import(/* webpackChunkName: "about" */ '../views/Role.vue')},
+      {path: 'menu',
+      name: '菜单管理',
+      component: () => import(/* webpackChunkName: "about" */ '../views/Menu.vue')}
 
     ]
   },

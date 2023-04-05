@@ -50,6 +50,7 @@ instance.interceptors.response.use(
                 confirmButtonText: '确定',
                 type: 'error'
             })
+            window.location.href="/login"
             return Promise.reject('error')
         }
         return res

@@ -54,7 +54,7 @@
             :total="total"
           >
           </el-pagination>
-          <el-dialog title="用户调整" :visible.sync="dialogFormVisible">
+          <el-dialog :title="!form.id?'用户添加':'用户编辑'" :visible.sync="dialogFormVisible">
       <el-form :model="form" label-width="120px">
         <el-form-item label="用户名称" :label-width="formLabelWidth">
           <el-input v-model="form.username" autocomplete="off"></el-input>
