@@ -61,6 +61,8 @@
 import cookie from "js-cookie";
 import { error } from "console";
 import Login from "@/api/Login";
+import RoleMenu from "../api/RoleMenu";
+import user from "../api/user";
 export default {
   props: {
     collapsebtn: String,
@@ -86,9 +88,13 @@ export default {
         const userinfo = JSON.stringify(res.data.user);
         cookie.set("userinfo", userinfo, { domain: "localhost" });
         const Stringinfo = cookie.get("userinfo");
-        console.log(1);
         //对string类型的信息进行json转换
         this.userinfo = JSON.parse(Stringinfo);
+        //根据用户信息找到相应的菜单列表
+        user.getUserMenu(this.userinfo).then(res=>{
+          console.log("用户菜单列表=>",res)
+          
+        })
       });
     },
   },

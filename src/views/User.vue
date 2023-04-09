@@ -28,6 +28,12 @@
             </el-table-column>
             <el-table-column prop="username" label="姓名" width="120">
             </el-table-column>
+            <el-table-column prop="nickname" label="别名" width="120">
+            </el-table-column>
+            <el-table-column prop="phone" label="电话" width="120">
+            </el-table-column>
+            <el-table-column prop="role" label="权限" width="120">
+            </el-table-column>
             <el-table-column prop="address" label="地址"> </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -62,6 +68,13 @@
         <el-form-item label="用户地址" :label-width="formLabelWidth">
           <el-input v-model="form.address" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="用户权限" :label-width="formLabelWidth">
+          <el-select v-model="form.role" placeholder="请选择用户权限">
+      <el-option label="管理员" value="ROLE_ADMIN"></el-option>
+      <el-option label="学生" value="ROLE_STUDENT"></el-option>
+      <el-option label="教师" value="ROLE_TEACHER"></el-option>
+    </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -74,6 +87,8 @@
 </template>
 <script>
 import user from "@/api/user";
+import cookie from "js-cookie";
+import { Message, MessageBox } from 'element-ui'
 export default {
     name: "User",
   data() {
@@ -155,6 +170,20 @@ export default {
           message: '更新成功',
           type: 'success'
         })
+        //判断修改用户权限时，当前用户与被修改用户是否一致，如果是则需重新登录
+        const Stringinfo = cookie.get("userinfo");
+        //对string类型的信息进行json转换
+        const userinfo = JSON.parse(Stringinfo);
+        console.log(userinfo)
+        if(this.form.id==userinfo.id){
+          MessageBox.alert(res.message, '以修改当前登录用户的权限，请重新登录', {
+                confirmButtonText: '确定',
+                type: 'success'
+            })
+          cookie.set("token", "", { domain: "localhost" });
+      cookie.set("userinfo", "", { domain: "localhost" });
+      this.$router.push("/login");
+        }
         this.dialogFormVisible=false
         this.getUserList()
       })

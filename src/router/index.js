@@ -60,11 +60,18 @@ const routes = [
   }
 ]
 
+
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
+
+
+//设置动态路由
+
+
+
 
 //强制登录
 router.beforeEach((to, from, next) => {

@@ -48,5 +48,12 @@ export default{
             method:"delete",
             data:ids
         })
+    },
+    getUserMenu(sysUser){
+        return request({
+            url:`/my_oa/sys-user/getUserMenu/`,
+            method:"post",
+            data:sysUser
+        })
     }
 }
