@@ -182,7 +182,9 @@ export default {
             })
           cookie.set("token", "", { domain: "localhost" });
       cookie.set("userinfo", "", { domain: "localhost" });
+      
       this.$router.push("/login");
+      
         }
         this.dialogFormVisible=false
         this.getUserList()

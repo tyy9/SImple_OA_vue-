@@ -18,7 +18,7 @@
     >
       <span
         style="
-          display:flex;
+          display: flex;
           justify-content: center;
           flex-direction: column;
           margin-right: 5px;
@@ -80,6 +80,7 @@ export default {
       console.log(1);
       cookie.set("token", "", { domain: "localhost" });
       cookie.set("userinfo", "", { domain: "localhost" });
+      cookie.set("menuList", "", { domain: "localhost" });
       this.$router.push("/login");
     },
     checktoken() {
@@ -91,10 +92,17 @@ export default {
         //对string类型的信息进行json转换
         this.userinfo = JSON.parse(Stringinfo);
         //根据用户信息找到相应的菜单列表
-        user.getUserMenu(this.userinfo).then(res=>{
-          console.log("用户菜单列表=>",res)
-          
-        })
+        user.getUserMenu(this.userinfo).then((res) => {
+          console.log("用户菜单列表=>", res);
+          const menuList = JSON.stringify(res.data.menulist);
+          cookie.set("menuList", menuList, { domain: "localhost" });
+          //强制刷新一次页面，将菜单数据刷新  
+          if (window.location.href.indexOf("#reloaded") == -1) {
+            window.location.href = window.location.href + "#reloaded";
+
+            window.location.reload();
+          }
+        });
       });
     },
   },
@@ -103,7 +111,7 @@ export default {
     // console.log(1);
     // //对string类型的信息进行json转换
     // this.userinfo = JSON.parse(Stringinfo);
-    this.checktoken()
+    this.checktoken();
   },
 };
 </script>

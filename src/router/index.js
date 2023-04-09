@@ -4,36 +4,37 @@ import Home from '../views/Manage.vue'
 import cookie from"js-cookie"
 import { Message, MessageBox } from 'element-ui'
 
+
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'Manage',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Manage.vue'),
-    redirect: "/home",
-    children:[
-      {path: 'home',
-      name: '首页',
-      component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')},
-      {path: 'user',
-      name: '用户管理',
-      component: () => import(/* webpackChunkName: "about" */ '../views/User.vue')},
-      {path: 'userinfo',
-      name: '个人信息',
-      component: () => import(/* webpackChunkName: "about" */ '../views/UserInfo.vue')},
-      {path: 'file',
-      name: '文件管理',
-      component: () => import(/* webpackChunkName: "about" */ '../views/File.vue')},
-      {path: 'role',
-      name: '角色管理',
-      component: () => import(/* webpackChunkName: "about" */ '../views/Role.vue')},
-      {path: 'menu',
-      name: '菜单管理',
-      component: () => import(/* webpackChunkName: "about" */ '../views/Menu.vue')}
+  // {
+  //   path: '/',
+  //   name: 'Manage',
+  //   component: () => import(/* webpackChunkName: "about" */ '../views/Manage.vue'),
+  //   redirect: "/home",
+  //   children:[
+  //     {path: 'home',
+  //     name: '首页',
+  //     component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')},
+  //     {path: 'user',
+  //     name: '用户管理',
+  //     component: () => import(/* webpackChunkName: "about" */ '../views/User.vue')},
+  //     {path: 'userinfo',
+  //     name: '个人信息',
+  //     component: () => import(/* webpackChunkName: "about" */ '../views/UserInfo.vue')},
+  //     {path: 'file',
+  //     name: '文件管理',
+  //     component: () => import(/* webpackChunkName: "about" */ '../views/File.vue')},
+  //     {path: 'role',
+  //     name: '角色管理',
+  //     component: () => import(/* webpackChunkName: "about" */ '../views/Role.vue')},
+  //     {path: 'menu',
+  //     name: '菜单管理',
+  //     component: () => import(/* webpackChunkName: "about" */ '../views/Menu.vue')}
 
-    ]
-  },
+  //   ]
+  // },
   {
     path: '/about',
     name: 'About',
@@ -69,9 +70,50 @@ const router = new VueRouter({
 
 
 //设置动态路由
+export const setRoutes=()=>{
+    const storemenu=JSON.parse(cookie.get("menuList"))
+    if(storemenu){
+      const Manage={
+        path: '/',
+        name: 'Manage',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Manage.vue'),
+        redirect: "/home",
+        children:[]
+      }
+      storemenu.forEach(item=>{
+        console.log(item)
+        if(item.path){
+          const itemmenu={
+            path: item.path,
+            name: item.name,
+            component: () => import(/* webpackChunkName: "about" */ '../views/'+item.pagePath+'.vue'),
+            children:[]
+          }
+          Manage.children.push(itemmenu)
+        }else  if(item.children.length){
+          item.children.forEach(item=>{
+            const itemmenu_children={
+              path: item.path,
+              name: item.name,
+              component: () => import(/* webpackChunkName: "about" */ '../views/'+item.pagePath+'.vue')
+            }
+            Manage.children.push(itemmenu_children)
+          })
+        }
+      })
+      console.log("Manage=>",Manage)
 
+      //获取当前路由信息
+      const currentRouter=router.getRoutes().map(v=>v.name)
+      if(!currentRouter.includes("Manage")){
+        router.addRoute(Manage)
+      }
+      
+    }
+}
 
-
+//每次重置路由就刷新一次路由
+setRoutes()
 
 //强制登录
 router.beforeEach((to, from, next) => {
