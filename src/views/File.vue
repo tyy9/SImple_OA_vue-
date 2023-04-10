@@ -67,7 +67,7 @@
         <div class="upload">
             <el-upload
           class="upload-demo"
-          action="http://localhost:8001/my_oa/oss/upload"
+          action="http://47.104.66.106:8001/my_oa/oss/upload"
           :on-preview="handlePreview"
           :on-remove="handleRemove"
           :before-remove="beforeRemove"

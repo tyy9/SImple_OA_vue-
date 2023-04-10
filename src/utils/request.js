@@ -1,10 +1,11 @@
 import axios from 'axios'
 import cookie from 'js-cookie'
 import { Message, MessageBox } from 'element-ui'  //导入element-ui组件库
+import { ServerIp } from '../../public/config'
  
 // 创建axios的对象
 const instance = axios.create({
-    baseURL: "http://localhost:8001/",  //配置固定域名
+    baseURL: `http://${ServerIp}:8001/`,  //配置固定域名
     timeout: 5000
 })
  

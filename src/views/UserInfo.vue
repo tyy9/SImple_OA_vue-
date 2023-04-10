@@ -30,7 +30,7 @@
       <span>用户头像(点击更换)</span>
       <el-upload
         class="avatar-uploader"
-        action="http://localhost:8001/my_oa/oss/upload"
+        action="http://47.104.66.106:8001/my_oa/oss/upload"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         
