@@ -53,6 +53,7 @@
 import Login from "@/api/Login";
 import cookie from "js-cookie";
 import user from "../api/user";
+import { ServerIp } from "../../public/config";
 export default {
   data() {
     return {
@@ -64,7 +65,7 @@ export default {
             message: "请输入用户名",
             trigger: "blur",
           },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" },
         ],
         password: [
           {
@@ -85,17 +86,18 @@ export default {
           Login.login(this.sysuser).then((res) => {
             console.log(res);
             //将token放入cookie中
-            cookie.set("token", res.data.token, { domain: "localhost" });
+            cookie.set("token", res.data.token, { domain: `${ServerIp}` });
             console.log(cookie.get("token"));
             //在跳转之前对token进行检查并把用户信息保存在cookie中
             Login.checktoken().then((res) => {
               console.log("log=>", res);
               const userinfo = JSON.stringify(res.data.user);
-              cookie.set("userinfo", userinfo, { domain: "localhost" });
+              cookie.set("userinfo", userinfo, { domain: `${ServerIp}` });
+              
               user.getUserMenu(res.data.user).then((res) => {
                 console.log("用户菜单列表=>", res);
                 const menuList = JSON.stringify(res.data.menulist);
-                cookie.set("menuList", menuList, { domain: "localhost" });
+                cookie.set("menuList", menuList, { domain: `${ServerIp}` });
                 //强制刷新一次页面，将菜单数据刷新
                 // if (window.location.href.indexOf("#reloaded") == -1) {
                 //   window.location.href = window.location.href + "#reloaded";

@@ -63,6 +63,7 @@ import { error } from "console";
 import Login from "@/api/Login";
 import RoleMenu from "../api/RoleMenu";
 import user from "../api/user";
+import { ServerIp } from '../../public/config'
 export default {
   props: {
     collapsebtn: String,
@@ -78,16 +79,16 @@ export default {
     },
     register() {
       console.log(1);
-      cookie.set("token", "", { domain: "localhost" });
-      cookie.set("userinfo", "", { domain: "localhost" });
-      // cookie.set("menuList", "", { domain: "localhost" });
+      cookie.set("token", "", { domain: `${ServerIp}` });
+      cookie.set("userinfo", "", { domain: `${ServerIp}` });
+      // cookie.set("menuList", "", { domain: `${ServerIp}` });
       this.$router.push("/login");
     },
     checktoken() {
       Login.checktoken().then((res) => {
         console.log("log=>", res);
         const userinfo = JSON.stringify(res.data.user);
-        cookie.set("userinfo", userinfo, { domain: "localhost" });
+        cookie.set("userinfo", userinfo, { domain: `${ServerIp}` });
         const Stringinfo = cookie.get("userinfo");
         //对string类型的信息进行json转换
         this.userinfo = JSON.parse(Stringinfo);

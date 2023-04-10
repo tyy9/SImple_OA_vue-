@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Manage.vue'
 import cookie from"js-cookie"
 import { Message, MessageBox } from 'element-ui'
-
+import { ServerIp } from '../../public/config'
 
 Vue.use(VueRouter)
 
@@ -123,13 +123,13 @@ setRoutes()
 router.beforeEach((to, from, next) => {
   if (to.path.startsWith('/login')) {
     //如果从login开始则删除cookie里的所有值
-    cookie.set("token", "", { domain: "localhost" });
-    cookie.set("userinfo", "", { domain: "localhost" });
+    cookie.set("token", "", { domain: `${ServerIp}` });
+    cookie.set("userinfo", "", { domain: `${ServerIp}` });
       next()
   } else if(to.path.startsWith('/register')){
     //如果从register开始则删除cookie里的所有值
-    cookie.set("token", "", { domain: "localhost" });
-    cookie.set("userinfo", "", { domain: "localhost" });
+    cookie.set("token", "", { domain: `${ServerIp}` });
+    cookie.set("userinfo", "", { domain: `${ServerIp}` });
     next()
   }
   else {

@@ -30,7 +30,7 @@
       <span>用户头像(点击更换)</span>
       <el-upload
         class="avatar-uploader"
-        action="http://47.104.66.106:8001/my_oa/oss/upload"
+        action="http://localhost:8001/my_oa/oss/upload"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         
@@ -42,7 +42,7 @@
       </el-upload>
       <div class="btnbox">
         <el-button type="success" @click="updateUser">保存</el-button>
-        <el-button type="">取消</el-button>
+        <el-button type="" @click="cancel">取消</el-button>
       </div>
     </el-form>
   </div>
@@ -51,10 +51,13 @@
 import cookie from "js-cookie";
 import user from "@/api/user"
 import { type } from 'os';
+import oss from "@/api/Oss"
 export default {
   data() {
     return {
       userinfo: {},
+      file_flag:false,//标记是否上传过文件
+      file_object:{}
       // requestHeader: {  //未上传图片的请求头加token
       //     Authorization: cookie.get("token")
       //   },
@@ -68,9 +71,15 @@ export default {
   },
   methods:{
     handleAvatarSuccess(res, file) {
+      console.log(res.data)
         this.userinfo.avatarUrl=res.data.url
+        this.file_object.url=res.data.url
       },
       beforeAvatarUpload(file) {
+        if(file.size>0){
+          console.log("upload=>",file)
+          this.file_flag=true
+        }
         const isJPG = file.type === 'image/jpeg';
         const isLt2M = file.size / 1024 / 1024 < 2;
 
@@ -91,6 +100,14 @@ export default {
           
           this.$router.push("/login")
         })
+      },
+      cancel(){
+        if(this.file_flag){
+          oss.deletefile(this.file_object).then(res=>{
+            console.log("deletefile=>",res)
+            this.$router.push("/")
+          })
+        }
       }
   }
 };
