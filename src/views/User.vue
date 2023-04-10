@@ -182,7 +182,7 @@ export default {
             })
           cookie.set("token", "", { domain: "localhost" });
       cookie.set("userinfo", "", { domain: "localhost" });
-      
+      cookie.set("menuList", "", { domain: "localhost" });
       this.$router.push("/login");
       
         }

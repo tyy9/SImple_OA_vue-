@@ -15,17 +15,17 @@
     <div class="menuaside" v-for="item in menuList" :key="item.id">
       <div v-if="item.path">
         <el-menu-item :index="item.path">
-          <template slot="title"
-            ><i :class="item.icon"></i>
-            <span slot="title">{{ item.name }}</span></template
-          >
+          
+           <i :class="item.icon" v-show="true"></i>
+            <span slot="title" >{{ item.name }}</span>
+          
         </el-menu-item>
       </div>
       <div v-else>
         <el-submenu :index="item.path">
           <template slot="title">
             <i :class="item.icon"></i>
-            <span slot="title">{{ item.name }}</span>
+            <span slot="title" v-show="textshow">{{ item.name }}</span>
           </template>
           <div v-for="item2 in item.children" :key="item2.id">
             <el-menu-item :index="item2.path">

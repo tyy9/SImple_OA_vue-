@@ -71,45 +71,49 @@ const router = new VueRouter({
 
 //设置动态路由
 export const setRoutes=()=>{
-    const storemenu=JSON.parse(cookie.get("menuList"))
-    if(storemenu){
-      const Manage={
-        path: '/',
-        name: 'Manage',
-        component: () => import(/* webpackChunkName: "about" */ '../views/Manage.vue'),
-        redirect: "/home",
-        children:[]
-      }
-      storemenu.forEach(item=>{
-        console.log(item)
-        if(item.path){
-          const itemmenu={
-            path: item.path,
-            name: item.name,
-            component: () => import(/* webpackChunkName: "about" */ '../views/'+item.pagePath+'.vue'),
+        const storemenu=cookie.get("menuList")
+        if(storemenu){
+          const Manage={
+            path: '/',
+            name: 'Manage',
+            component: () => import(/* webpackChunkName: "about" */ '../views/Manage.vue'),
+            redirect: "/home",
             children:[]
           }
-          Manage.children.push(itemmenu)
-        }else  if(item.children.length){
-          item.children.forEach(item=>{
-            const itemmenu_children={
-              path: item.path,
-              name: item.name,
-              component: () => import(/* webpackChunkName: "about" */ '../views/'+item.pagePath+'.vue')
+          const menu=JSON.parse(storemenu)
+          menu.forEach(item=>{
+            console.log(item)
+            if(item.path){
+              const itemmenu={
+                path: item.path,
+                name: item.name,
+                component: () => import(/* webpackChunkName: "about" */ '../views/'+item.pagePath+'.vue'),
+                children:[]
+              }
+              Manage.children.push(itemmenu)
+            }else  if(item.children.length){
+              item.children.forEach(item=>{
+                const itemmenu_children={
+                  path: item.path,
+                  name: item.name,
+                  component: () => import(/* webpackChunkName: "about" */ '../views/'+item.pagePath+'.vue')
+                }
+                Manage.children.push(itemmenu_children)
+              })
             }
-            Manage.children.push(itemmenu_children)
           })
+          console.log("Manage=>",Manage)
+    
+          //获取当前路由信息
+          const currentRouter=router.getRoutes().map(v=>v.name)
+          if(!currentRouter.includes("Manage")){
+            router.addRoute(Manage)
+          }
+          
         }
-      })
-      console.log("Manage=>",Manage)
 
-      //获取当前路由信息
-      const currentRouter=router.getRoutes().map(v=>v.name)
-      if(!currentRouter.includes("Manage")){
-        router.addRoute(Manage)
-      }
       
-    }
+   
 }
 
 //每次重置路由就刷新一次路由
