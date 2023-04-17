@@ -55,5 +55,11 @@ export default{
             method:"post",
             data:sysUser
         })
+    },
+    getUserByRole(role){
+        return request({
+            url:`/my_oa/sys-user/getUserByRole/${role}`,
+            method:"post",
+        })
     }
 }

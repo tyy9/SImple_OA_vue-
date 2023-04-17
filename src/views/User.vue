@@ -32,7 +32,7 @@
             </el-table-column>
             <el-table-column prop="phone" label="电话" width="120">
             </el-table-column>
-            <el-table-column prop="role" label="权限" width="120">
+            <el-table-column prop="role" sortable label="权限" width="120">
             </el-table-column>
             <el-table-column prop="address" label="地址"> </el-table-column>
             <el-table-column label="操作">

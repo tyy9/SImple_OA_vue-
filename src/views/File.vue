@@ -90,7 +90,7 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelupload">取 消</el-button>
+        <el-button @click="cancelupload">取 消上传</el-button>
         <el-button type="primary" @click="upload_oss">确 定</el-button>
       </div>
     </el-dialog>
@@ -112,6 +112,8 @@ export default {
       multiselect: {},
       uploadfile: {},
       dialogFormVisible: false,
+      file_flag:false,//文件上传标记,
+      filetemp:{}
     };
   },
   methods: {        
@@ -157,6 +159,7 @@ export default {
     },
     //批量删除
     deletebatch() {
+      console.log(this.multiselect)
       let ids = this.multiselect.map((v) => v.id);
       this.$confirm("此操作将永久删除所选文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -189,6 +192,7 @@ export default {
         this.uploadfile.name=""
         oss.deletefile(this.uploadfile).then(res=>{
             console.log(res)
+            this.file_flag=false
         })
       },
       handlePreview(file) {
@@ -209,27 +213,47 @@ export default {
         this.uploadfile.size=response.data.size
         this.uploadfile.url=response.data.url
         this.uploadfile.type=response.data.type
-        
+        this.filetemp.url=response.data.url
+        this.file_flag=true
         this.$forceUpdate();
       },
       //点击取消按钮事件
       cancelupload(){
-        oss.deletefile(this.uploadfile).then(res=>{
-            console.log(res)
-            this.uploadfile=""
-            this.dialogFormVisible=false
-            this.fileList = []
-        })
+        // if(this.file_flag){
+        //   console.log("filetemp=>",this.filetemp)
+        //     file.deletefileByUrl(this.filetemp).then(res=>{
+        //         console.log(res)
+        //     })
+        //   // oss.deletefile(this.uploadfile).then(res=>{
+        //   //   console.log(res)
+        //   // })
+          
+          
+        // }
+        // window.location.reload();
+          this.dialogFormVisible=false
+            // this.fileList = []//清楚上传列表的文件显示
+            // this.uploadfile={}
+            
+            this.getfileList();
+            if(this.file_flag){
+              this.file_flag=false
+            }
       },
       //确定事件
       upload_oss(){
-        file.addFile(this.uploadfile).then(res=>{
-            console.log("添加=>",res)
-            this.dialogFormVisible=false
+        // file.addFile(this.uploadfile).then(res=>{
+        //     console.log("添加=>",res)
+            
+        // })
+        this.dialogFormVisible=false
             this.fileList = []//清楚上传列表的文件显示
-            this.uploadfile=""
+            this.uploadfile={}
+            
             this.getfileList();
-        })
+            if(this.file_flag){
+              this.file_flag=false
+            }
       },
       //下载
       download(url){
