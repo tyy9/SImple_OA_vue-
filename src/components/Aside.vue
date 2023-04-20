@@ -22,7 +22,7 @@
         </el-menu-item>
       </div>
       <div v-else>
-        <el-submenu :index="item.path">
+        <el-submenu :index="item.id + ''">
           <template slot="title">
             <i :class="item.icon"></i>
             <span slot="title" v-show="textshow">{{ item.name }}</span>

@@ -89,10 +89,10 @@
         </div>
         
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <!-- <div slot="footer" class="dialog-footer">
         <el-button @click="cancelupload">取 消上传</el-button>
         <el-button type="primary" @click="upload_oss">确 定</el-button>
-      </div>
+      </div> -->
     </el-dialog>
   </div>
 </template>
@@ -216,6 +216,10 @@ export default {
         this.filetemp.url=response.data.url
         this.file_flag=true
         this.$forceUpdate();
+        this.dialogFormVisible=false
+            this.fileList = []//清楚上传列表的文件显示
+            this.uploadfile={}
+            this.getfileList();
       },
       //点击取消按钮事件
       cancelupload(){

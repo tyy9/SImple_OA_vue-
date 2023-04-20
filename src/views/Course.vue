@@ -32,7 +32,18 @@
             </el-table-column>
             <el-table-column prop="times" label="学时" width="120">
             </el-table-column>
-            <el-table-column prop="state" label="课程状态"> </el-table-column>
+            <el-table-column prop="state" label="课程状态">
+              <template slot-scope="scope">
+                <span v-if="scope.row.state == 0">未开课</span>  
+                <span v-else>已开课</span>
+              </template>
+
+            </el-table-column>
+            <el-table-column prop="price" label="价格" width="120">
+            
+            </el-table-column>
+            <el-table-column prop="buycount" label="购买数量" width="120">
+            </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
@@ -68,6 +79,9 @@
         </el-form-item>
         <el-form-item label="课程学分" :label-width="formLabelWidth">
           <el-input v-model="form.score" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="课程价格" :label-width="formLabelWidth">
+          <el-input v-model="form.price" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="课程封面(点击+上传)" :label-width="formLabelWidth">
             <el-upload
@@ -206,7 +220,7 @@ export default {
         for(let i=0;i<this.subjectList.length;i++){
             if(this.subjectList[i].id===value){
                 console.log(this.subjectList[i].id)
-                this.subject_childrenList=this.subjectList[i].subjects_children
+                this.subject_childrenList=this.subjectList[i].children
             }
         }
         console.log(this.subject_childrenList)
@@ -214,6 +228,11 @@ export default {
     //-------------------------
     //回显
     findCourseById(id){
+      //课程分类获取
+      subject.getAllSubject().then(res=>{
+            this.subjectList=res.data.subjectList
+            console.log("subjectinfo=>",res.data.subjectList)
+        })
       this.dialogFormVisible=true
       Course.findCourseById(id).then(res=>{
         console.log(res)

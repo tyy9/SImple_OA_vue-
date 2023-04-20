@@ -33,7 +33,7 @@
                 <el-button
                   size="mini"
                   @click="addchildMenu(scope.row.id)"
-                  :disabled="scope.row.pid"
+                  :style="{display:scope.row.pid?'none':''}"
                   >添加子菜单</el-button
                 >
                 <el-button
@@ -45,6 +45,7 @@
                   size="mini"
                   type="danger"
                   @click="open(scope.row.id)"
+                  :style="{display:!scope.row.pid?'none':''}"
                   >删除</el-button
                 >
               </template>
@@ -77,6 +78,7 @@
 </template>
 <script>
 import menu from "@/api/Menu";
+
 export default {
   data() {
     return {
@@ -85,6 +87,7 @@ export default {
       dialogFormVisible:false,
       form:{},
       multiselect: {},
+      rolemenu_idlist:{}
     };
   },
   methods: {
@@ -103,16 +106,16 @@ export default {
       }
     },
     addMenu(){
-        //先将字符串分离
-        const split=this.form.pagePath.split("")
-        console.log(split)
-        //将首字母大写
-        const Upword=split[0].toUpperCase();
-        //获取剩下字符
-        const res=split.slice(1)
-        const res2=res.join("")
-        //拼接返回
-        this.form.pagePath=Upword+res2
+        // //先将字符串分离
+        // const split=this.form.pagePath.split("")
+        // console.log(split)
+        // //将首字母大写
+        // const Upword=split[0].toUpperCase();
+        // //获取剩下字符
+        // const res=split.slice(1)
+        // const res2=res.join("")
+        // //拼接返回
+        // this.form.pagePath=Upword+res2
         menu.addMenu(this.form).then(res=>{
             console.log(res)
             this.dialogFormVisible=false
@@ -168,6 +171,7 @@ export default {
     },
     deletebatch() {
       let ids = this.multiselect.map((v) => v.id);
+      console.log("tolemenu_idlist=>",this.rolemenu_idlist)
       console.log(ids);
       this.$confirm("此操作将永久删除所选菜单, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -193,6 +197,30 @@ export default {
     handleSelectionChange(val) {
       console.log(val);
       this.multiselect = val;
+      //=========================================
+        //获取当前菜单的父菜单与子菜单对象数组
+        const menudata = val;
+          console.log("data=>", menudata);
+          const totalmenu_idArray = menudata.map((v) => v.id);
+          console.log("totalmenu_idArray=>", totalmenu_idArray);
+          const childrenmenu_Array = menudata.map((v) => v.children);
+          console.log("childrenmenu_Array=>", childrenmenu_Array);
+          const childrenmenu_idArray = [];
+          //获取子菜单的id
+          childrenmenu_Array.forEach((item, index) => {
+            if (item.length > 0) {
+              item.forEach((item2, index2) => {
+                childrenmenu_idArray.push(item2.id);
+              });
+            }
+          });
+          console.log("childrenmenu_idArray=>", childrenmenu_idArray);
+          //去重
+          const filter = totalmenu_idArray.filter((item) =>
+            childrenmenu_idArray.every((x) => x != item)
+          );
+          this.rolemenu_idlist=filter
+          console.log("tolemenu_idlist=>",this.rolemenu_idlist)
     },
   },
   created() {
