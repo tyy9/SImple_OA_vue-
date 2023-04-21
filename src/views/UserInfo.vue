@@ -33,7 +33,7 @@
         action="http://localhost:8001/my_oa/oss/upload"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
-        
+        :headers="requestHeader"
         :before-upload="beforeAvatarUpload"
         
       >
@@ -57,10 +57,10 @@ export default {
     return {
       userinfo: {},
       file_flag:false,//标记是否上传过文件
-      file_object:{}
-      // requestHeader: {  //未上传图片的请求头加token
-      //     Authorization: cookie.get("token")
-      //   },
+      file_object:{},
+      requestHeader: {  //未上传图片的请求头加token
+          Authorization: cookie.get("token")
+        },
     };
   },
   created() {

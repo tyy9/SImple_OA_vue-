@@ -68,6 +68,19 @@
         <el-form-item label="用户地址" :label-width="formLabelWidth">
           <el-input v-model="form.address" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="用户头像" :label-width="formLabelWidth">
+          <el-upload
+        class="avatar-uploader"
+        action="http://localhost:8001/my_oa/oss/upload"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :headers="requestHeader"
+        :before-upload="beforeAvatarUpload"
+      >
+        <img v-if="form.avatarUrl" :src="form.avatarUrl" class="avatar" />
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
+        </el-form-item>
         <el-form-item label="用户权限" :label-width="formLabelWidth">
           <el-select v-model="form.role" placeholder="请选择用户权限">
       <el-option label="管理员" value="ROLE_ADMIN"></el-option>
@@ -75,6 +88,10 @@
       <el-option label="教师" value="ROLE_TEACHER"></el-option>
     </el-select>
         </el-form-item>
+
+          <VueTinymce id="tinymce"  v-model="description" ></VueTinymce>
+
+        
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -104,7 +121,11 @@ export default {
       textshow: true,
       dynamic_px: 200,
       isCollapse:false,
-      multiselect:{}
+      multiselect:{},
+      requestHeader: {  //未上传图片的请求头加token
+          Authorization: cookie.get("token")
+        },
+        description:""
     };
   },
   methods: {
@@ -152,6 +173,7 @@ export default {
       user.findUserById(id).then(res=>{
         console.log(res)
         this.form=res.data.user
+        this.description=res.data.user.description
       })
     },
     //更新与添加通用接口
@@ -164,6 +186,8 @@ export default {
     },
     //更新
     updatedUser() {
+      console.log(this.description)
+      this.form.description=this.description
       user.updateUser(this.form).then(res=>{
         this.$message({
           showClose: true,
@@ -236,7 +260,29 @@ export default {
             message: '已取消删除'
           });          
         });
-    }
+      },
+      //OSS
+      handleAvatarSuccess(res, file) {
+      console.log(res.data)
+        this.form.avatarUrl=res.data.url
+        this.$forceUpdate()
+      },
+      beforeAvatarUpload(file) {
+        if(file.size>0){
+          console.log("upload=>",file)
+          this.file_flag=true
+        }
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 100;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      },
   },
   created() {
     this.getUserList();
@@ -244,3 +290,8 @@ export default {
   },
 };
 </script>
+<style>
+/* 在el-dialog中tinymce z-index 被太小而被遮挡时要加这两句 */
+.tox-tinymce-aux{z-index:99999 !important;}
+.tinymce.ui.FloatPanel{z-Index: 99;}
+</style>

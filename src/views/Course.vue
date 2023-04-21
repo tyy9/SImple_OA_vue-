@@ -89,7 +89,7 @@
         action="http://localhost:8001/my_oa/oss/upload"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
-        
+        :headers="requestHeader"
         :before-upload="beforeAvatarUpload"
         
       >
@@ -156,7 +156,10 @@ export default {
       subjectList:{},
       subject_childrenList:[],
       teacherList:[],
-      filedata:{}
+      filedata:{},
+      requestHeader: {  //未上传图片的请求头加token
+          Authorization: cookie.get("token")
+        }
     };
   },
   methods: {
