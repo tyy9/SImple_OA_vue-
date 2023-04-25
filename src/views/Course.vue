@@ -93,7 +93,7 @@
         :before-upload="beforeAvatarUpload"
         
       >
-        <img v-if="form.avatar" :src="form.avatar" class="avatar"  style="width: 760px;height: 500px;"/>
+        <img v-if="form.avatar" :src="form.avatar" class="avatar"  style="width: 700px;height: 500px;"/>
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
         </el-form-item>
@@ -231,16 +231,26 @@ export default {
     //-------------------------
     //回显
     findCourseById(id){
-      //课程分类获取
-      subject.getAllSubject().then(res=>{
-            this.subjectList=res.data.subjectList
-            console.log("subjectinfo=>",res.data.subjectList)
-        })
-      this.dialogFormVisible=true
       Course.findCourseById(id).then(res=>{
         console.log(res)
         this.form=res.data.course
+        
       })
+      //课程分类获取
+     
+      subject.getAllSubject().then(res=>{
+            this.subjectList=res.data.subjectList
+            this.getsubject_childrenList(this.form.subjectId)
+            console.log("subjectinfo=>",res.data.subjectList)
+        })
+        
+        //教师信息获取
+        user.getUserByRole("ROLE_TEACHER").then(res=>{
+            this.teacherList=res.data.userlist
+        })
+        
+      this.dialogFormVisible=true
+      
       this.$forceUpdate()
     },
     //更新与添加通用接口
