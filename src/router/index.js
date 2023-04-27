@@ -133,7 +133,7 @@ router.beforeEach((to, from, next) => {
     next()
   }
   else {
-      if (cookie.get("token")=="") {
+      if (!cookie.get("token")) {
         //如果不是则判断cookie里的token值是否存在
         MessageBox.alert("未登录", '未登录', {
           confirmButtonText: '确定',

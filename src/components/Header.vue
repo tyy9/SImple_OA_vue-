@@ -113,11 +113,11 @@ export default {
     // //对string类型的信息进行json转换
     // this.userinfo = JSON.parse(Stringinfo);
     this.checktoken();
-    // if (window.location.href.indexOf("#reloaded") == -1) {
-    //         window.location.href = window.location.href + "#reloaded";
-    //         this.$forceUpdate
-    //         window.location.reload();
-    //       }
+    if (window.location.href.indexOf("#reloaded") == -1) {
+            window.location.href = window.location.href + "#reloaded";
+            this.$forceUpdate
+            window.location.reload();
+          }
   },
 };
 </script>
