@@ -40,6 +40,11 @@ export default {
             data: ids
         })
     },
-    
+    findAllCourse(){
+        return request({
+            url: `/my_oa/course/findAllCourse/`,
+            method: "get",
+        })
+    }
 
 }

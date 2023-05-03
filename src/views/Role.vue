@@ -160,7 +160,7 @@ export default {
       role.pageRole(this.page, this.limit, this.sysRole).then((res) => {
         console.log(res);
         this.roledata = res.data.data;
-        this.total = res.data.total;
+        this.total=parseInt(res.data.total)  
       });
     },
     onsubmit() {
@@ -168,7 +168,7 @@ export default {
       role.pageRole(this.page, this.limit, this.sysRole).then((res) => {
         console.log(res);
         this.roledata = res.data.data;
-        this.total = res.data.total;
+        this.total=parseInt(res.data.total)  
       });
     },
     addRole() {

@@ -30,6 +30,9 @@ import user from "@/api/user";
 import Aside from "@/components/Aside"
 import Header from "@/components/Header.vue";
 import tree from '../../../../../guli/源码/day18/前端整合代码/element-ui依赖/element-ui/packages/table/src/store/tree';
+import cookie from"js-cookie"
+import { ServerIp } from "../../public/config";
+
 export default {
   name: "Home",
   components: {
@@ -75,6 +78,9 @@ export default {
   },
   created() {
     this.textshow=true
+    user.getUnpass_UserCount().then(res=>{
+      cookie.set("notify_count", res.data.count, { domain: `${ServerIp}` });
+    })
   },
   components:{
     Aside,

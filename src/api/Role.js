@@ -16,6 +16,12 @@ export default{
             })
         }
     ,
+    getAllRole(){
+        return request({
+            url:`/my_oa/sys-role/getAllRole`,
+            method:'get',
+        })
+    },
     addRole(formdata){
         return request({
             url:`/my_oa/sys-role/addRole`,
@@ -23,6 +29,7 @@ export default{
             data:formdata
         })
     },
+    
     findRoleById(id){
         return request({
             url:`/my_oa/sys-role/findRoleById/${id}`,

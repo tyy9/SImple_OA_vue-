@@ -24,9 +24,6 @@
       <el-form-item label="用户邮箱">
         <el-input v-model="userinfo.email"></el-input>
       </el-form-item>
-      <el-form-item label="用户密码">
-        <el-input v-model="userinfo.password" show-password></el-input>
-      </el-form-item>
       <span>用户头像(点击更换)</span>
       <el-upload
         class="avatar-uploader"

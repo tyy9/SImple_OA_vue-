@@ -123,7 +123,7 @@ export default {
       console.log("limit=>",this.limit)
       file.pagefile(this.page, this.limit, this.file_namesearch).then((res) => {
         this.filedata = res.data.data;
-        this.total = res.data.total;
+        this.total=parseInt(res.data.total)  
         console.log(res);
       });
     },

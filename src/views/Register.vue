@@ -31,7 +31,7 @@
               show-password
             ></el-input>
           </el-form-item>
-          <el-form-item label="别称" prop="password">
+          <el-form-item label="别称" prop="nickname">
             <el-input
               class="inputtools"
               placeholder="请输入别称"
@@ -40,7 +40,7 @@
 
             ></el-input>
           </el-form-item>
-          <el-form-item label="邮箱" prop="password">
+          <el-form-item label="邮箱" prop="email">
             <el-input
               class="inputtools"
               placeholder="请输入邮箱"
@@ -49,7 +49,7 @@
 
             ></el-input>
           </el-form-item>
-          <el-form-item label="电话" prop="password">
+          <el-form-item label="电话" prop="phone">
             <el-input
               class="inputtools"
               placeholder="请输入电话"
@@ -58,6 +58,11 @@
 
             ></el-input>
           </el-form-item>
+          <el-form-item label="权限选择" :label-width="formLabelWidth">
+          <el-select v-model="sysuser.role" placeholder="请选择权限">
+            <el-option v-for="item in roleList" :key="item" :label="item.name"  :value="item.flag"></el-option>
+        </el-select>
+        </el-form-item>
           </el-form>
         </div>
         <div class="enterbtn_box">
@@ -74,10 +79,12 @@
   
   <script>
   import Login from "@/api/Login";
+  import Role from "@/api/Role"
   export default {
     data() {
       return {
         sysuser: {},
+        roleList:{},
         rules:{
           username:[
               {
@@ -91,7 +98,7 @@
               },
               { min: 1, max: 20, message: '长度在 1 到 20个字符', trigger: 'blur' }
           ],
-          ninckname:[
+          nickname:[
               {
                   required: true, message: '请输入别名', trigger: 'blur' 
               },
@@ -103,7 +110,7 @@
               },
               { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
           ],
-          电话:[
+          phone:[
               {
                   required: false, message: '请输入电话', trigger: 'blur' 
               },
@@ -117,7 +124,12 @@
           this.$refs['ruleForm'].validate((vaild)=>{
               if(vaild){
                   Login.register(this.sysuser).then((res) => {
+                    this.$message({
+                      message:"注册成功",
+                      type:"success"
+                    })
                       this.$router.push("/login")
+                      
                   });
               }else{
                   return false
@@ -126,7 +138,11 @@
         
       },
     },
-    
+    created () {
+      Role.getAllRole().then(res=>{
+        this.roleList=res.data.data
+      })
+    }
   };
   </script>
   

@@ -61,5 +61,11 @@ export default{
             url:`/my_oa/sys-user/getUserByRole/${role}`,
             method:"post",
         })
+    },
+    getUnpass_UserCount(){
+        return request({
+            url:`/my_oa/sys-user/getUnpass_UserCount/`,
+            method:"get",
+        })
     }
 }

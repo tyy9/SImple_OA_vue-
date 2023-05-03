@@ -1,7 +1,7 @@
 <template>
     <div>
       <div class="tittle" style="margin-bottom: 10px;">
-        <b>用户管理</b>
+        <b>用户注册审批</b>
     </div>
         <div class="search_header">
             <el-input
@@ -14,9 +14,6 @@
             >
           </div>
           <div class="tools" style="margin-top: 5px">
-            <el-button type="primary" @click="dialogFormVisible = true"
-              >新增</el-button
-            >
             <el-button type="danger" slot="reference" @click="deletebatch">批量删除 <i class="el-icon-remove-outline"></i></el-button>
           </div>
           <el-table :data="userdata"   @selection-change="handleSelectionChange">
@@ -26,7 +23,7 @@
           </el-table-column>
             <el-table-column prop="createTime" label="日期" width="140">
             </el-table-column>
-            <el-table-column prop="username" label="用户名" width="120">
+            <el-table-column prop="username" label="姓名" width="120">
             </el-table-column>
             <el-table-column prop="nickname" label="别名" width="120">
             </el-table-column>
@@ -45,20 +42,15 @@
               <template slot-scope="scope">
                 <el-button
                   size="mini"
-                  :type="scope.row.status==0?'primary':'danger'"
-                  @click="status_update(scope.row.id,scope.row.status)"
-                  >{{ scope.row.status==0?'激活':'冻结' }}</el-button
-                >
-                <el-button
-                  size="mini"
-                  @click="findUserById(scope.row.id)"
-                  >编辑</el-button
+                  type="primary"
+                  @click="User_pass(scope.row.id)"
+                  >通过</el-button
                 >
                 <el-button
                   size="mini"
                   type="danger"
                   @click="open(scope.row.id)"
-                  >删除</el-button
+                  >拒绝</el-button
                 >
               </template>
             </el-table-column>
@@ -134,7 +126,7 @@ export default {
       dynamic_px: 200,
       isCollapse:false,
       multiselect:{},
-      user_temp:"",
+      user_temp:{},
       requestHeader: {  //未上传图片的请求头加token
           Authorization: cookie.get("token")
         },
@@ -156,6 +148,7 @@ export default {
     },
     getUserList(page = 1) {//分页
       this.page = page;
+      this.sysUser.status=0
       user.pageUser(this.page, this.limit, this.sysUser).then((res) => {
         console.log(res);
         this.userdata = res.data.data;
@@ -239,7 +232,11 @@ export default {
             type: 'success',
             message: '删除成功!'
           });
+          let count=cookie.get("notify_count")
+          cookie.set("notify_count", count-1, { domain: `${ServerIp}` });
+          
           this.getUserList();
+          window.location.reload()
           })
         }).catch(() => {
           this.$message({
@@ -255,7 +252,7 @@ export default {
     deletebatch(){
       let ids=this.multiselect.map(v=>v.id)
       console.log(ids)
-      this.$confirm('此操作将永久删除所选文件, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除所选用户, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -265,7 +262,8 @@ export default {
             type: 'success',
             message: '删除成功!'
           });
-          this.getUserList();
+          
+          // this.getUserList();
           })
         }).catch(() => {
           this.$message({
@@ -296,21 +294,13 @@ export default {
         }
         return isJPG && isLt2M;
       },
-      status_update(id,status){
+      User_pass(id){
         user.findUserById(id).then(res=>{
         console.log(res)
         this.user_temp=res.data.user
-        if(status){
-          this.user_temp.status=0
-        }else{
-          this.user_temp.status=1
-        }
+        this.user_temp.status=1
         user.updateUser(this.user_temp).then(res=>{
-          this.$message({
-            message:"状态修改成功",
-            type:"success"
-          })
-          this.getUserList()
+          
         })
       })
       }
@@ -318,6 +308,7 @@ export default {
   created() {
     this.getUserList();
     this.textshow=true
+
   },
 };
 </script>

@@ -18,7 +18,9 @@
           
            <i :class="item.icon" v-show="true"></i>
             <span slot="title" >{{ item.name }}</span>
-          
+            <span slot="title" 
+            style="color:red;font-weight: bold;" v-show="item.id==72?true:false">
+            {{notify_count}}</span>
         </el-menu-item>
       </div>
       <div v-else>
@@ -69,6 +71,7 @@
 </template>
 <script>
 import cookie from "js-cookie";
+import user from "@/api/user"
 export default {
   props: {
     textshow: Boolean,
@@ -77,11 +80,13 @@ export default {
   data: {
     return: {
       menuList: [],
+      notify_count:""
     },
   },
   created() {
     this.menuList = JSON.parse(cookie.get("menuList"));
     console.log("aside_menu=>", this.menuList);
+    this.notify_count=cookie.get("notify_count")
   },
 };
 </script>

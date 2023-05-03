@@ -62,6 +62,9 @@
         <el-form-item label="菜单介绍" :label-width="formLabelWidth">
           <el-input v-model="form.description" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="菜单图标(el-icon-****)" :label-width="formLabelWidth">
+          <el-input v-model="form.icon" autocomplete="off"></el-input>
+        </el-form-item>
         <el-form-item label="页面路径" :label-width="formLabelWidth">
           <el-input v-model="form.pagePath" autocomplete="off"></el-input>
         </el-form-item>
@@ -117,6 +120,10 @@ export default {
         // //拼接返回
         // this.form.pagePath=Upword+res2
         menu.addMenu(this.form).then(res=>{
+          this.$message({
+            message:"请及时在角色菜单中分配菜单管理，并重新登录生效",
+            type:"success"
+          })
             console.log(res)
             this.dialogFormVisible=false
             this.getMenuList()

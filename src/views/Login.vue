@@ -31,6 +31,11 @@
               show-password
             ></el-input>
           </el-form-item>
+          <el-form-item label="权限选择" :label-width="formLabelWidth">
+          <el-select v-model="sysuser.role" placeholder="请选择权限">
+            <el-option v-for="item in roleList" :key="item" :label="item.name"  :value="item.flag"></el-option>
+        </el-select>
+        </el-form-item>
         </el-form>
       </div>
       <div class="enterbtn_box">
@@ -53,11 +58,13 @@
 import Login from "@/api/Login";
 import cookie from "js-cookie";
 import user from "../api/user";
+import Role from "@/api/Role"
 import { ServerIp } from "../../public/config";
 export default {
   data() {
     return {
       sysuser: {},
+      roleList:{},
       rules: {
         username: [
           {
@@ -125,6 +132,11 @@ export default {
       });
     },
   },
+  created () {
+      Role.getAllRole().then(res=>{
+        this.roleList=res.data.data
+      })
+    }
 };
 </script>
 

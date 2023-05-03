@@ -180,14 +180,14 @@ export default {
       Course.pageCourse(this.page, this.limit, this.course).then((res) => {
         console.log(res);
         this.coursedata = res.data.data;
-        this.total = res.data.total;
+        this.total=parseInt(res.data.total)  
       });
     },
     onsubmit() {//按需查询
       Course.pageCourse(this.page, this.limit, this.course).then((res) => {
         console.log(res);
         this.coursedata = res.data.data;
-        this.total = res.data.total;
+        this.total=parseInt(res.data.total)  
       });
     },
     addCourse(){
