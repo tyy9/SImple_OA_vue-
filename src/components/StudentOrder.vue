@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="tittle" style="margin-bottom: 10px">
-      <b>订单管理</b>
+      <b>用户管理</b>
     </div>
     <div class="search_header">
       <el-input
-        v-model="order.courseName"
-        placeholder="请输入课程名字"
+        v-model="sysUser.username"
+        placeholder="请输入名字"
         style="width: 200px; margin-right: 5px"
       ></el-input>
       <el-button type="primary" icon="el-icon-search" @click="onsubmit"
@@ -14,46 +14,42 @@
       >
     </div>
     <div class="tools" style="margin-top: 5px">
-      <el-button type="primary" @click="dialogFormVisible = true"
+      <el-button type="primary" @click="dialogAddFormVisible = true"
         >新增</el-button
       >
       <el-button type="danger" slot="reference" @click="deletebatch"
         >批量删除 <i class="el-icon-remove-outline"></i
       ></el-button>
     </div>
-    <el-table :data="orderdata" @selection-change="handleSelectionChange">
+    <el-table :data="userdata" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column prop="gmtCreate" label="日期" width="140">
+      <el-table-column prop="createTime" label="日期" width="140">
       </el-table-column>
-      <el-table-column prop="id" label="订单id" width="140">
+      <el-table-column prop="username" label="用户名" width="120">
       </el-table-column>
-      <el-table-column prop="courseName" label="课程名称" width="120">
+      <el-table-column prop="nickname" label="别名" width="120">
       </el-table-column>
-      <el-table-column prop="username" label="购买用户" width="120">
+      <el-table-column prop="phone" label="电话" width="120"> </el-table-column>
+      <el-table-column prop="role" sortable label="权限" width="120">
       </el-table-column>
-      <el-table-column prop="price" label="价格" width="120"> </el-table-column>
-      <el-table-column prop="time_count" sortable label="倒计时" width="120">
-        <template slot-scope="scope">
-          {{ scope.row.time_count == null ? "无" : scope.row.time_count + "s" }}
-        </template>
-      </el-table-column>
-      <el-table-column prop="status" sortable label="购买状态" width="120">
+      <el-table-column prop="status" sortable label="状态" width="120">
         <template slot-scope="scope">
           <span v-show="scope.row.status == 1" style="color: orange"
-            >已购买</span
+            >已激活</span
           >
-          <span v-show="scope.row.status == 0" style="color: red">未付款</span>
+          <span v-show="scope.row.status == 0" style="color: red">冻结</span>
         </template>
       </el-table-column>
+      <el-table-column prop="address" label="地址"> </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             size="mini"
-            :type="scope.row.status == 0 ? 'danger' : 'primary'"
+            :type="scope.row.status == 0 ? 'primary' : 'danger'"
             @click="status_update(scope.row.id, scope.row.status)"
-            >{{ scope.row.status == 0 ? "支付" : "已支付" }}</el-button
+            >{{ scope.row.status == 0 ? "激活" : "冻结" }}</el-button
           >
-          <el-button size="mini" @click="findOrderById(scope.row.id)"
+          <el-button size="mini" @click="findUserById(scope.row.id)"
             >编辑</el-button
           >
           <el-button size="mini" type="danger" @click="open(scope.row.id)"
@@ -64,36 +60,22 @@
     </el-table>
     <el-pagination
       @size-change="handleSizeChange"
-      @current-change="getOrderList"
+      @current-change="getUserList"
       :current-page.sync="page"
       :page-size="limit"
       layout="total, prev, pager, next"
       :total="total"
     >
     </el-pagination>
-    <el-dialog
-      :title="!form.id ? '订单添加' : '订单编辑'"
-      :visible.sync="dialogFormVisible"
-    >
+    <el-dialog :title="'用户编辑'" :visible.sync="dialogFormVisible">
       <el-form :model="form" label-width="120px">
-        <el-form-item label="课程选择" :label-width="formLabelWidth">
-          <el-select
-            v-model="form.courseId"
-            placeholder="请选择课程"
-            @change="findCourse"
-          >
-            <el-option
-              v-for="item in coursedata"
-              :key="item"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+        <el-form-item label="用户名称" :label-width="formLabelWidth">
+          <el-input v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="用户id" :label-width="formLabelWidth">
-          <el-input v-model="form.userId" autocomplete="off"></el-input>
+        <el-form-item label="用户地址" :label-width="formLabelWidth">
+          <el-input v-model="form.address" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="订单封面 " :label-width="formLabelWidth">
+        <el-form-item label="用户头像" :label-width="formLabelWidth">
           <el-upload
             class="avatar-uploader"
             action="http://localhost:8001/my_oa/oss/upload"
@@ -102,17 +84,19 @@
             :headers="requestHeader"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="form.courseAvatar" :src="form.courseAvatar" class="avatar" width="400px" height="300px" />
+            <img v-if="form.avatarUrl" :src="form.avatarUrl" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="支付状态" :label-width="formLabelWidth">
-          <el-select v-model="form.status" placeholder="请选择支付状态">
-      <el-option label="立即支付" value=true></el-option>
-      <el-option label="稍后支付" value=false></el-option>
-    </el-select>
+        <el-form-item label="用户权限" :label-width="formLabelWidth">
+          <el-select v-model="form.role" placeholder="请选择用户权限">
+            <el-option label="管理员" value="ROLE_ADMIN"></el-option>
+            <el-option label="学生" value="ROLE_STUDENT"></el-option>
+            <el-option label="教师" value="ROLE_TEACHER"></el-option>
+          </el-select>
         </el-form-item>
 
+        <VueTinymce id="tinymce" v-model="description"></VueTinymce>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -120,37 +104,54 @@
       </div>
     </el-dialog>
 
-   
+    <!-- 添加 -->
+    <el-dialog
+      title="学生添加"
+      :visible.sync="dialogAddFormVisible"
+      width="100%"
+    >
+      <el-form :model="form_add" label-width="120px">
+        <el-form-item label="学生id" :label-width="formLabelWidth">
+          <el-input v-model="form_add.id" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogAddFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addORupadte">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
 import user from "@/api/user";
 import cookie from "js-cookie";
+import { Message, MessageBox } from "element-ui";
 import order from "@/api/Order";
 import course from "@/api/Course";
-import { Message, MessageBox } from "element-ui";
-
-
 export default {
   name: "User",
-  
+  props: {
+    course_selected: Number,
+  },
   data() {
     return {
-      orderdata: {},
+      userdata: {},
       collapsebtn: "el-icon-s-fold",
       total: 0,
       page: 1,
-      limit: 5,
-      order: {},
+      limit: 2,
+      sysUser: {},
       dialogFormVisible: false,
       form: {},
       textshow: true,
+      dialogAddFormVisible: false,
       dynamic_px: 200,
       isCollapse: false,
       multiselect: {},
-      coursedata: {},
-      order_temp: "",
-      
+      user_temp: "",
+      form_add: {},
+      orderdata:{},
+      coursedata:{},
       requestHeader: {
         //未上传图片的请求头加token
         Authorization: cookie.get("token"),
@@ -171,88 +172,112 @@ export default {
         this.textshow = true;
       }
     },
-    getOrderList(page = 1) {
+    getCourseinfo(){
+        course.findCourseById(this.course_selected).then(res=>{
+            this.coursedata=res.data.course
+        })
+    },
+    getUserList(page = 1) {
       //分页
       this.page = page;
-      order.pageOrder(this.page, this.limit, this.order).then((res) => {
-        console.log(res);
-        this.orderdata = res.data.data;
-        this.total = parseInt(res.data.total);
-      });
-      //获取课程数据
-      course.findAllCourse().then((res) => {
-        this.coursedata = res.data.data;
-      });
+      course
+        .pageuserByCourseId(this.page, this.limit, this.course_selected)
+        .then((res) => {
+          console.log(res);
+          this.userdata = res.data.data;
+          this.total = parseInt(res.data.total);
+        });
     },
     onsubmit() {
       //按需查询
-      order.pageOrder(this.page, this.limit, this.order).then((res) => {
+      user.pageUser(this.page, this.limit, this.sysUser).then((res) => {
         console.log(res);
-        this.orderdata = res.data.data;
+        this.userdata = res.data.data;
         this.total = parseInt(res.data.total);
       });
     },
-    addOrder() {
-      console.log(this.form.status)
-      if(this.form.status==true){
-        this.form.time=0
-      }else{
-        this.form.time=1  
-      }
-      console.log(this.form.time)
-      order.addOrder(this.form).then((res) => {
-        this.$message({
+    addUser() {
+    this.orderdata.courseId=this.course_selected
+    this.orderdata.courseName=this.coursedata.name
+    this.orderdata.userId=this.form_add.id
+    this.orderdata.courseAvatar=this.coursedata.avatar
+    this.orderdata.price=this.coursedata.price
+    this.orderdata.status=1
+
+        order.addOrder(this.orderdata).then(res=>{
+            this.$message({
           showClose: true,
-          message: "添加成功",
+          message: "订单同步成功",
           type: "success",
         });
-        this.dialogFormVisible = false;
-        this.getOrderList();
-      });
+        })
+        window.location.reload()
+
     },
     //回显
-    findOrderById(id) {
+    findUserById(id) {
       this.dialogFormVisible = true;
-      order.findOrderById(id).then((res) => {
+      user.findUserById(id).then((res) => {
         console.log(res);
-        this.form = res.data.order;
+        this.form = res.data.user;
+        this.description = res.data.user.description;
       });
     },
     //更新与添加通用接口
     addORupadte() {
       if (!this.form.id) {
-        this.addOrder();
+        this.addUser();
       } else {
-        this.updatedOrder();
+        this.updatedUser();
       }
     },
     //更新
-    updatedOrder() {
+    updatedUser() {
       console.log(this.description);
-      order.updateOrder(this.form).then((res) => {
+      this.form.description = this.description;
+      user.updateUser(this.form).then((res) => {
         this.$message({
           showClose: true,
           message: "更新成功",
           type: "success",
         });
+        //判断修改用户权限时，当前用户与被修改用户是否一致，如果是则需重新登录
+        const Stringinfo = cookie.get("userinfo");
+        //对string类型的信息进行json转换
+        const userinfo = JSON.parse(Stringinfo);
+        console.log(userinfo);
+        if (this.form.id == userinfo.id) {
+          MessageBox.alert(
+            res.message,
+            "以修改当前登录用户的权限，请重新登录",
+            {
+              confirmButtonText: "确定",
+              type: "success",
+            }
+          );
+          cookie.set("token", "", { domain: "localhost" });
+          cookie.set("userinfo", "", { domain: "localhost" });
+          cookie.set("menuList", "", { domain: "localhost" });
+          this.$router.push("/login");
+        }
         this.dialogFormVisible = false;
-        this.getOrderList();
+        this.getUserList();
       });
     },
     //删除弹窗
     open(id) {
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          order.deleteOrderByid(id).then((res) => {
+          user.deleteUser(id).then((res) => {
             this.$message({
               type: "success",
               message: "删除成功!",
             });
-            this.getOrderList();
+            this.getUserList();
           });
         })
         .catch(() => {
@@ -275,12 +300,12 @@ export default {
         type: "warning",
       })
         .then(() => {
-          order.deleteOrderByids(ids).then((res) => {
+          user.deleteUserbatch(ids).then((res) => {
             this.$message({
               type: "success",
               message: "删除成功!",
             });
-            this.getOrderList();
+            this.getUserList();
           });
         })
         .catch(() => {
@@ -313,37 +338,29 @@ export default {
       return isJPG && isLt2M;
     },
     status_update(id, status) {
-      order.findOrderById(id).then((res) => {
+      user.findUserById(id).then((res) => {
         console.log(res);
-        this.order_temp = res.data.order;
+        this.user_temp = res.data.user;
         if (status) {
-          this.order_temp.status = 0;
+          this.user_temp.status = 0;
         } else {
-          this.order_temp.status = 1;
+          this.user_temp.status = 1;
         }
-        order.updateOrder(this.order_temp).then((res) => {
+        user.updateUser(this.user_temp).then((res) => {
           this.$message({
             message: "状态修改成功",
             type: "success",
           });
-          this.getOrderList();
+          this.getUserList();
         });
       });
     },
-    //根据课程多选框id寻找课程名字
-    findCourse(val){
-       course.findCourseById(val).then(res=>{
-          const course=res.data.course
-          this.form.courseName=course.name
-          this.form.price=course.price
-          this.form.courseAvatar=course.avatar 
-          this.$forceUpdate() 
-       })
-    }
   },
   created() {
-    this.getOrderList();
+    this.getCourseinfo();
+    this.getUserList();
     this.textshow = true;
+    this.$forceUpdate();
   },
 };
 </script>

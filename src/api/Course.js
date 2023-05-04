@@ -45,6 +45,12 @@ export default {
             url: `/my_oa/course/findAllCourse/`,
             method: "get",
         })
+    },
+    pageuserByCourseId(page, limit,id){
+        return request({
+            url: `/my_oa/course/pageuserByCourseId/${page}/${limit}/${id}`,
+            method: 'post',
+        })
     }
 
 }
