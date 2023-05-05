@@ -2,7 +2,7 @@ import axios from 'axios'
 import cookie from 'js-cookie'
 import { Message, MessageBox } from 'element-ui'  //导入element-ui组件库
 import { ServerIp } from '../../public/config'
- 
+import { Notification } from 'element-ui';
 // 创建axios的对象
 const instance = axios.create({
     baseURL: `http://${ServerIp}:8001/`,  //配置固定域名
@@ -52,6 +52,13 @@ instance.interceptors.response.use(
                 type: 'error'
             })
             window.location.href="/login"
+            return Promise.reject('error')
+        }
+        else if (res.code == 25) {
+            Notification.warning({
+                title:"提示",
+                message:res.message
+            })
             return Promise.reject('error')
         }
         return res

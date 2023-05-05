@@ -139,7 +139,7 @@ export default {
       collapsebtn: "el-icon-s-fold",
       total: 0,
       page: 1,
-      limit: 2,
+      limit: 1,
       sysUser: {},
       dialogFormVisible: false,
       form: {},
@@ -177,9 +177,8 @@ export default {
             this.coursedata=res.data.course
         })
     },
-    getUserList(page = 1) {
+    getUserList() {
       //分页
-      this.page = page;
       course
         .pageuserByCourseId(this.page, this.limit, this.course_selected)
         .then((res) => {

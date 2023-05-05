@@ -125,7 +125,7 @@
               if(vaild){
                   Login.register(this.sysuser).then((res) => {
                     this.$message({
-                      message:"注册成功",
+                      message:"注册成功,请等待管理员审核通过",
                       type:"success"
                     })
                       this.$router.push("/login")

@@ -300,7 +300,7 @@ export default {
         this.user_temp=res.data.user
         this.user_temp.status=1
         user.updateUser(this.user_temp).then(res=>{
-          
+          window.location.reload()
         })
       })
       }

@@ -135,6 +135,21 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="是否开课" :label-width="formLabelWidth">
+          <el-select
+            v-model="form.state"
+            placeholder="选择课程状态"
+          >
+            <el-option
+              label="开课"
+              value=true
+            ></el-option>
+            <el-option
+              label="未开课"
+              value=false
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <p>课程简介</p>
         <VueTinymce id="tinymce" v-model="form.description"></VueTinymce>
       </el-form>
@@ -273,14 +288,16 @@ export default {
       Course.findCourseById(id).then((res) => {
         console.log(res);
         this.form = res.data.course;
-      });
-      //课程分类获取
-
-      subject.getAllSubject().then((res) => {
+        subject.getAllSubject().then((res) => {
         this.subjectList = res.data.subjectList;
         this.getsubject_childrenList(this.form.subjectId);
         console.log("subjectinfo=>", res.data.subjectList);
+        this.$forceUpdate()
       });
+      });
+      //课程分类获取
+
+     
 
       //教师信息获取
       user.getUserByRole("ROLE_TEACHER").then((res) => {
