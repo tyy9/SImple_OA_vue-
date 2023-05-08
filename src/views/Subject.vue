@@ -30,7 +30,7 @@
                   <el-button
                     size="mini"
                     @click="addchildSubject(scope.row.id)"
-                    :disabled="scope.row.pid"
+                    v-show="scope.row.parentId==0?true:false"
                     >添加子课程分类</el-button
                   >
                   <el-button

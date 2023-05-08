@@ -153,7 +153,7 @@ export default {
   width: 500px;
   height: auto;
   margin: 0 auto;
-  border: 1px solid black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   background-color: #fff;
   text-align: center;
 }

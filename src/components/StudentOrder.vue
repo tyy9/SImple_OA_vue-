@@ -139,7 +139,7 @@ export default {
       collapsebtn: "el-icon-s-fold",
       total: 0,
       page: 1,
-      limit: 1,
+      limit: 5,
       sysUser: {},
       dialogFormVisible: false,
       form: {},

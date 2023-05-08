@@ -41,6 +41,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="address" label="地址"> </el-table-column>
+      <el-table-column prop="avatarUrl" label="头像"> 
+        <template slot-scope="scope">
+          <img :src="scope.row.avatarUrl" width="50px" height="50px" />
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
